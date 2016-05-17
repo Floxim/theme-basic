@@ -1,0 +1,170 @@
+html, body {
+    color:@color_main;
+    height:100%;
+    font-family:@font;
+    margin:0;
+    padding:0;
+    &, * {
+        box-sizing:border-box;
+    }
+}
+
+body {
+    overflow-x:hidden;
+}
+
+.layout {
+    width:100%;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    &__section {
+        flex-direction:column;
+    }
+    &__section_content {
+        flex:1;
+    }
+}
+
+// добавляем position:relative для контейнеров внутри шапки/футера, чтобы перекрыть тени
+// хак =(
+.layout__section .fx-container {
+    position:relative;
+}
+
+a img {
+    border:none;
+}
+
+.fx-container_sizing_default.fx-content_parent-sizing_fullwidth {
+    .layout_width();
+}
+
+//.fx-container_sizing_fullwidth.fx-content_parent-sizing_default, 
+//.fx-container_sizing_fullwidth-outer.fx-content_parent-sizing_default 
+
+// Растянуть на всю ширину экрана
+.fx-container_sizing_fullwidth,
+.fx-container_sizing_fullwidth-outer
+{
+    &.fx-content_parent-sizing_default,
+    &.fx-content_parent-sizing_fullwidth-outer {
+        
+        @margin:50 - 5000/@layout_width;
+        margin-left:@margin;
+        margin-right:@margin;
+        align-self:stretch;
+
+        @breakpoint: (@max_width / (@layout_width/100)) * 1px;
+        @scrollbar_width:18px;
+
+        .media_min(
+            @breakpoint, 
+            {
+                //@margin:calc(~"(100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1");
+                @margin:calc(~"(100vw - " @scrollbar_width ~" - " @max_width ~") / 2 * -1");
+                margin-left: @margin;
+                margin-right: @margin;
+            }
+        );
+
+        &.fx-content_parent-padding_all, &.fx-content_parent-padding_we {
+            @margin-padded:~"calc( " @margin ~" - " @layout_padding_horizontal ~" - " @scrollbar_width/2 ~" )";
+            margin-left: @margin-padded;
+            margin-right: @margin-padded;
+
+            .media_min(
+                @breakpoint, 
+                {
+                    @margin:calc(~"(100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1");
+                    margin-left: @margin;
+                    margin-right: @margin;
+                }
+            );
+        }
+    }
+}
+
+.fx-container_sizing_antipad {
+    &.fx-content_parent-padding_all, &.fx-content_parent-padding_we {
+        margin-left:@layout_padding_horizontal * -1;
+        margin-right:@layout_padding_horizontal * -1;
+        align-self:stretch;
+    }
+}
+
+.fx-container_sizing_antipad, .fx-container_sizing_fullwidth, .fx-container_sizing_fullwidth-outer {
+    &.fx-content_parent-padding_all, &.fx-content_parent-padding_ns {
+        &:first-child {
+            margin-top:@layout_padding_vertical * -1;
+        }
+        &:last-child, &:last-of-type {
+            margin-bottom:@layout_padding_vertical * -1;
+        }
+    }
+}
+
+.fx-container {
+    display:flex;
+    &_align {
+        &_left {
+            align-items:stretch;
+        }
+        &_center {
+            align-items:center;
+        }
+        &_right {
+            align-items:flex-end;
+        }
+    }
+    &_valign {
+        &_top {
+            justify-content:flex-start;
+        }
+        &_middle {
+            justify-content:center;
+        }
+        &_bottom {
+            justify-content:flex-end;
+        }
+        &_stretch {
+            justify-content:stretch;
+        }
+    }
+}
+
+.fx-container_padding {
+    &_all {
+        padding:@layout_padding_vertical @layout_padding_horizontal;
+    }
+    &_ns {
+        padding-top:@layout_padding_vertical;
+        padding-bottom:@layout_padding_vertical;
+    }
+    &_we {
+        padding-left:@layout_padding_horizontal;
+        padding-right:@layout_padding_horizontal;
+    }
+}
+
+.show-grid {
+    position:fixed;
+    z-index:0;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:row;
+    align-items:stretch;
+    opacity:0.5;
+    max-height:10px;
+    #__column {
+        border-right:1px dashed #EEE;
+        flex-grow:1;
+        &:nth-child(2n) {
+            background:#EEE;
+            border-right:1px dashed #AAA;
+        }
+    }
+}

@@ -1,7 +1,7 @@
 html, body {
-    color:@color_main;
+    .color();
     height:100%;
-    font-family:@font;
+    font-family:@font_text;
     margin:0;
     padding:0;
     &, * {
@@ -30,6 +30,7 @@ body {
 // хак =(
 .layout__section .fx-container {
     position:relative;
+    //z-index:1;
 }
 
 a img {
@@ -39,9 +40,6 @@ a img {
 .fx-container_sizing_default.fx-content_parent-sizing_fullwidth {
     .layout_width();
 }
-
-//.fx-container_sizing_fullwidth.fx-content_parent-sizing_default, 
-//.fx-container_sizing_fullwidth-outer.fx-content_parent-sizing_default 
 
 // Растянуть на всю ширину экрана
 .fx-container_sizing_fullwidth,
@@ -61,7 +59,6 @@ a img {
         .media_min(
             @breakpoint, 
             {
-                //@margin:calc(~"(100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1");
                 @margin:calc(~"(100vw - " @scrollbar_width ~" - " @max_width ~") / 2 * -1");
                 margin-left: @margin;
                 margin-right: @margin;
@@ -76,7 +73,7 @@ a img {
             .media_min(
                 @breakpoint, 
                 {
-                    @margin:calc(~"(100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1");
+                    @margin:~"calc((100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1)";
                     margin-left: @margin;
                     margin-right: @margin;
                 }
@@ -168,3 +165,30 @@ a img {
         }
     }
 }
+
+
+
+
+@color_names: main alt third;
+@color_levels:0 1 2 3 4 5;
+
+
+.color_level_loop(@rules; @selector; @name; @i:length(@color_levels) ) when (@i > 0) {
+  @level: extract(@color_levels, @i);
+  @color_var: 'color-@{name}-@{level}';
+  @{selector}_color-@{name}-@{level} {
+    @current-color:@@color_var;
+    @rules();
+  }
+  .color_level_loop(@rules; @selector; @name; (@i - 1) );
+}
+
+.color_loop(@rules; @selector; @i:length(@color_names) ) when (@i > 0) {
+  @name: extract(@color_names, @i);
+  .color_level_loop(@rules; @selector; @name);
+  .color_loop(@rules; @selector; (@i - 1) );
+}
+
+.color_loop({
+  background-color:@current-color;
+}; ~".fx-container_bg-color");

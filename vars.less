@@ -1,17 +1,37 @@
+@color-main-0: #808080;
+@color-main-1: #a6a6a6;
+@color-main-2: #cccccc;
+@color-main-3: #f2f2f2;
+@color-main-4: #030303;
+@color-main-5: #030303;
+@color-alt-0: #40bf80;
+@color-alt-1: #79d2a6;
+@color-alt-2: #b3e6cc;
+@color-alt-3: #ecf9f2;
+@color-alt-4: #010403;
+@color-alt-5: #020503;
+@color-third-0: #4095bf;
+@color-third-1: #79b5d2;
+@color-third-2: #b3d4e6;
+@color-third-3: #ecf4f9;
+@color-third-4: #010304;
+@color-third-5: #020405;
+
+
 /*
 {"label":"Основной шрифт", "type":"font", "tab":"fonts"}
 */
-@font:Times;
+@font_text:Times;
 
 /*
 {"label":"Шрифт для навигации", "type":"font", "tab":"fonts"}
 */
-@font_nav:@font;
+@font_nav:@font_text;
 
 /*
 {"label":"Шрифт для заголовков", "type":"font", "tab":"fonts"}
 */
-@font_headers:@font;
+@font_headers:@font_text;
 
 /*
 {"label":"Ширина лейаута", "type":"number", "tab":"sizes", "units":"%"}
@@ -24,48 +44,48 @@
 @max_width:1000px;
 
 /*
-{"label":"Основной цвет", "type":"color", "tab":"colors"}
+{"label":"Основной", "type": "colorset", "tab":"colors", "neutral":true, "value":"#223"}
 */
-@color:#000;
+@color-main:#000;
 
-
-@color_main: @color;
+@color_main:@color-main;
 
 /*
-{"label":"Основной светлый", "type":"color", "tab":"colors"}
+{"label":"Акценты", "type": "colorset", "tab":"colors", "value":"#24F"}
 */
-@color_main_inverted:#FFF;
+@color-alt:#000;
 
+@color_alt:@color-alt;
 
-/*
-{"label":"Бледный цвет", "type":"color", "tab":"colors"}
-*/
-@color_light:#444;
-
-/*
-{"label":"Бледный светлый", "type":"color", "tab":"colors"}
-*/
-@color_light_inverted:#AAA;
+@color_light:@color-main-3;
+@color_light_inverted: @color-main-5;
 
 /*
-{"label":"Дополнительный цвет", "type":"color", "tab":"colors"}
+{"label":"Дополнительный", "type": "colorset", "tab":"colors", "value":"#FC0"}
 */
-@color_alt:#009;
-/*
-{"label":"Дополнительный светлый", "type":"color", "tab":"colors"}
-*/
-@color_alt_inverted:@color_alt;
+@color-third:#000;
+
+
+@color-main:@color-main-0;
+@color_main_inverted:@color-main-5;
+
+@color-alt:@color-alt-1;
+@color_alt_inverted:@color-alt-4;
 
 /*
 {"label":"Горизонтальный отступ", "type":"number", "units":"vw", "tab":"sizes", "min":"0.2", "max":"5", "step":"0.1"}
 */
 @layout_padding_horizontal:30px;
 
+@x: @layout_padding_horizontal;
+
 
 /*
 {"label":"Вертикальный отступ", "type":"number", "units":"vw", "tab":"sizes", "min":"0.2", "max":"5", "step":"0.1"}
 */
 @layout_padding_vertical:20px;
+
+@y: @layout_padding_vertical;
 
 @pad_min_width:700px;
 
@@ -80,28 +100,11 @@
 }
 
 .antipad_y() {
-    /*
-    .on_padded({
-        &:first-child {
-            margin-top: @layout_padding_vertical * -1;
-        }
-        &:last-child {
-            margin-bottom: @layout_padding_vertical * -1;
-        }
-    });
-    */
+
 }
 
 .antipad_x() {
-    /*
-    @media screen and (min-width:@pad_min_width) {
-        .on_padded({
-            margin-left: @layout_padding_horizontal * -1;
-            @doublewidth: @layout_padding_horizontal * 2;
-            width: calc(~"100% + " @doublewidth);
-        });
-    }
-    */
+
 }
 
 .antipad() {
@@ -149,38 +152,30 @@
     }
 }
 
+.color(@color; @prop:color) when (length(@color) = 2) {
+    .color(extract(@color, 1); extract(@color, 2); @prop);
+} 
 
-@dark_containers:~".dark";
-
-.color(@color:main) {
-    @var:'color_@{color}';
+.color(@color:main; @level:0; @prop:color) when (length(@color) = 1) {
+    @var:'color-@{color}-@{level}';
     color:@@var;
 }
 
-.color_transparent(@color:'main') {
-    .color(@color);
-    @var:'color_@{color}_inverted';
+.tcolor(@color:main; @level:0; @prop:color) when (length(@color) = 1) {
+    .color(@color; @level; @prop);
     .dark({
-        color:@@var;
+        .color(@color; (5 - @level); @prop);
     });
 }
 
-.on_dark(@rules; @step:1) when (@step < length(@dark_containers) + 1) {
-    
-    @sel:extract(@dark_containers, @step);
-    @{sel} & {
-        @rules();
-    }
-    .on_dark(@rules; @step+1);
-    
+.tcolor(@color:main 0; @prop:color) when (length(@color) = 2) {
+    .tcolor(extract(@color, 1); extract(@color, 2); @prop);
 }
 
-
-a {
-    color:@color_alt;
+.color_transparent(@color:'main') {
+    .tcolor(@color);
 }
 
-/** new mixins */
 
 .pad_x() {
     .fx-content_parent-padding_none&, .fx-content_parent-padding_ns& {
@@ -229,8 +224,8 @@ a {
     });
 }
 
-.text(@font-size:17px; @color:'main') {
-    .color_transparent(@color);
+.text(@font-size:17px; @color:main) {
+    .tcolor(@color);
     max-width:800px;
     &, p, ul, ol {
         font-size:@font-size;
@@ -243,6 +238,6 @@ a {
         }
     }
     a {
-        .color_transparent('alt');
+        .tcolor(alt);
     }
 }

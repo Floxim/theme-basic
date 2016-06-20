@@ -20,6 +20,7 @@ body {
     flex-direction: column;
     &__section {
         flex-direction:column;
+        align-self:center;
     }
     &__section_content {
         flex:1;
@@ -37,81 +38,41 @@ a img {
     border:none;
 }
 
-.fx-container_sizing_default.fx-content_parent-sizing_fullwidth {
-    .layout_width();
+.fx-container_height_grow {
+    flex-grow:1;
 }
 
-// Растянуть на всю ширину экрана
-.fx-container_sizing_fullwidth,
-.fx-container_sizing_fullwidth-outer
-{
-    &.fx-content_parent-sizing_default,
-    &.fx-content_parent-sizing_fullwidth-outer {
-        
-        @margin:50 - 5000/@layout_width;
-        margin-left:@margin;
-        margin-right:@margin;
-        align-self:stretch;
+.fx-container_width_container {
+    min-width:100%;
+    align-self:stretch;
+}
 
-        @breakpoint: (@max_width / (@layout_width/100)) * 1px;
-        @scrollbar_width:18px;
-
-        .media_min(
-            @breakpoint, 
-            {
-                @margin:calc(~"(100vw - " @scrollbar_width ~" - " @max_width ~") / 2 * -1");
-                margin-left: @margin;
-                margin-right: @margin;
-            }
-        );
-
-        &.fx-content_parent-padding_all, &.fx-content_parent-padding_we {
-            @margin-padded:~"calc( " @margin ~" - " @layout_padding_horizontal ~" - " @scrollbar_width/2 ~" )";
-            margin-left: @margin-padded;
-            margin-right: @margin-padded;
-
-            .media_min(
-                @breakpoint, 
-                {
-                    @margin:~"calc((100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1)";
-                    margin-left: @margin;
-                    margin-right: @margin;
-                }
-            );
-        }
+.fx-container_width_layout {
+    &.fx-content_parent-width_full {
+        .layout_width();
     }
 }
 
-.fx-container_sizing_antipad {
-    &.fx-content_parent-padding_all, &.fx-content_parent-padding_we {
-        margin-left:@layout_padding_horizontal * -1;
-        margin-right:@layout_padding_horizontal * -1;
-        align-self:stretch;
-    }
-}
-
-.fx-container_sizing_antipad, .fx-container_sizing_fullwidth, .fx-container_sizing_fullwidth-outer {
-    &.fx-content_parent-padding_all, &.fx-content_parent-padding_ns {
-        &:first-child {
-            margin-top:@layout_padding_vertical * -1;
-        }
-        &:last-child, &:last-of-type {
-            margin-bottom:@layout_padding_vertical * -1;
-        }
-    }
+.fx-container_width_full-outer, .fx-container_width_full {
+    align-self:stretch;
 }
 
 .fx-container {
     display:flex;
-    &_align {
-        &_left {
-            align-items:stretch;
-        }
-        &_center {
-            align-items:center;
-        }
-        &_right {
-            align-items:flex-end;
+    &_width_custom, &_width_auto {
+        &.fx-container_align {
+            &_left {
+                align-self: flex-start;
+                align-items: stretch;
+            }
+            &_center {
+                align-self: center;
+                align-items: center;
+            }
+            &_right {
+                align-self: flex-end;
+                align-items: flex-end;
+            }
         }
     }
     &_valign {
@@ -176,7 +137,7 @@ a img {
 .color_level_loop(@rules; @selector; @name; @i:length(@color_levels) ) when (@i > 0) {
   @level: extract(@color_levels, @i);
   @color_var: 'color-@{name}-@{level}';
-  @{selector}_color-@{name}-@{level} {
+  @{selector}_@{name}-@{level} {
     @current-color:@@color_var;
     @rules();
   }

@@ -19,39 +19,56 @@
 
 
 /*
-{"label":"Основной шрифт", "type":"font", "tab":"fonts"}
+label: Основной шрифт
+type: font
+tab: fonts
 */
 @font_text:Times;
 
 /*
-{"label":"Шрифт для навигации", "type":"font", "tab":"fonts"}
+label: Шрифт для навигации
+type: font
+tab: fonts
 */
 @font_nav:@font_text;
 
 /*
-{"label":"Шрифт для заголовков", "type":"font", "tab":"fonts"}
+label: Шрифт для заголовков
+type: font
+tab: fonts
 */
 @font_headers:@font_text;
 
 /*
-{"label":"Ширина лейаута", "type":"number", "tab":"sizes", "units":"%"}
+label: Ширина лейаута
+type: number
+tab: sizes
+units: %
 */
 @layout_width:80%;
 
 /*
-{"label":"Максимальная ширина лейаута", "type":"number", "tab":"sizes", "units":"px"}
+label: Максимальная ширина лейаута
+type: number
+tab: sizes
+units: px
 */
 @max_width:1000px;
 
 /*
-{"label":"Основной", "type": "colorset", "tab":"colors", "neutral":true, "value":"#223"}
+label: Основной
+type: colorset
+tab: colors
+neutral: true
 */
 @color-main:#000;
 
 @color_main:@color-main;
 
 /*
-{"label":"Акценты", "type": "colorset", "tab":"colors", "value":"#24F"}
+label: Акценты
+type: colorset
+tab: colors
 */
 @color-alt:#000;
 
@@ -61,7 +78,9 @@
 @color_light_inverted: @color-main-5;
 
 /*
-{"label":"Дополнительный", "type": "colorset", "tab":"colors", "value":"#FC0"}
+label: Дополнительный
+type: colorset
+tab: colors
 */
 @color-third:#000;
 
@@ -73,7 +92,13 @@
 @color_alt_inverted:@color-alt-4;
 
 /*
-{"label":"Горизонтальный отступ", "type":"number", "units":"vw", "tab":"sizes", "min":"0.2", "max":"5", "step":"0.1"}
+label: Горизонтальный отступ
+type: number
+units: vw
+tab: sizes
+min: 0.2
+max: 5
+step: 0.1
 */
 @layout_padding_horizontal:30px;
 
@@ -81,7 +106,13 @@
 
 
 /*
-{"label":"Вертикальный отступ", "type":"number", "units":"vw", "tab":"sizes", "min":"0.2", "max":"5", "step":"0.1"}
+label: Вертикальный отступ
+type: number
+units: vw
+tab: sizes
+min: 0.2
+max: 5
+step: 0.1
 */
 @layout_padding_vertical:20px;
 
@@ -118,29 +149,23 @@
     }
 }
 
-.fullwidth() {
-    @width_diff: (1 - @layout_width/100) / (@layout_width/100)*100;
-    @width_diff_decimal: 1 + @width_diff / 100;
-    @width: (100 + @width_diff) * 1%;
-    width: calc(@width ~" + " (@layout_padding_horizontal * @width_diff_decimal) * 2 );
-    margin-left: calc( (@width - 100% ) / 2 * -1 ~" - " @layout_padding_horizontal * @width_diff_decimal);
-    @breakpoint: (@max_width / (@layout_width/100)) * 1px;
-    .media_min(
-        @breakpoint, 
-        {
-            //@scrollbar_width:18px;
-            @scrollbar_width:0px;
-            margin-left: calc(~"(100vw - " @scrollbar_width ~" + " @layout_padding_horizontal*2 ~" - " @max_width ~") / 2 * -1");
-            width:calc(~"100vw - " @scrollbar_width);
-        }
-    );
-}
-
 .layout_width() {
     width:@layout_width;
     min-width:0;
     max-width:@max_width;
-    margin:auto;
+    align-self:center;
+
+    @bp: (@max_width / (@layout_width/100)) ~"";
+
+    @media screen and (min-width: @bp) {
+        width:auto;
+        align-self:stretch;
+        /*
+        @margin: ~"calc( (100vw - " @max_width ~") / 2)";
+        margin-left:@margin;
+        margin-right:@margin;
+        */
+    }
 }
 
 .clearfix() {
@@ -152,13 +177,32 @@
     }
 }
 
+.font-family(@family:main) {
+    @var:'font_@{family}';
+    font-family:@@var;
+}
+
+.font-style(@val) when (length(@val) = 1) {
+    font-style:normal;
+    font-weight:@val;
+}
+
+.font-style(@val) when (length(@val) = 2) {
+    font-weight: extract(@val, 1);
+    font-style: extract(@val, 2);
+}
+
+.color(@color; ... ) when (@color = none) {
+
+}
+
 .color(@color; @prop:color) when (length(@color) = 2) {
     .color(extract(@color, 1); extract(@color, 2); @prop);
 } 
 
-.color(@color:main; @level:0; @prop:color) when (length(@color) = 1) {
+.color(@color:main; @level:0; @prop:color) when (length(@color) = 1) and not(@color = none) {
     @var:'color-@{color}-@{level}';
-    color:@@var;
+    @{prop}:@@var;
 }
 
 .tcolor(@color:main; @level:0; @prop:color) when (length(@color) = 1) {
@@ -175,6 +219,7 @@
 .color_transparent(@color:'main') {
     .tcolor(@color);
 }
+
 
 
 .pad_x() {

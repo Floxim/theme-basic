@@ -160,11 +160,6 @@ step: 0.1
     @media screen and (min-width: @bp) {
         width:auto;
         align-self:stretch;
-        /*
-        @margin: ~"calc( (100vw - " @max_width ~") / 2)";
-        margin-left:@margin;
-        margin-right:@margin;
-        */
     }
 }
 
@@ -177,9 +172,35 @@ step: 0.1
     }
 }
 
+// 'nav 16px bold italic uppercase underline'
+.font(@font) {
+    @family: extract(@font, 1);
+    & when not(@family = inherit) {
+        .font-family(extract(@font, 1));
+    }
+    @size: extract(@font, 2);
+    & when not(@size = inherit) {
+        font-size: @size;
+    }
+    @weight: extract(@font, 3);
+    & when not(@weight = inherit) {
+        font-weight: @weight;
+    }
+    font-style: extract(@font, 4);
+    text-transform: extract( @font, 5);
+    & when ( length(@font) > 5 ) {
+        text-decoration: extract( @font, 6);
+    }
+}
+
 .font-family(@family:main) {
-    @var:'font_@{family}';
-    font-family:@@var;
+    .wf-active & {
+        @var:'font_@{family}';
+        font-family:@@var;
+    }
+    .wf-loading & {
+        color: transparent !important;
+    }
 }
 
 .font-style(@val) when (length(@val) = 1) {
@@ -193,7 +214,7 @@ step: 0.1
 }
 
 .color(@color; ... ) when (@color = none) {
-
+    nocolor:true;
 }
 
 .color(@color; @prop:color) when (length(@color) = 2) {
@@ -218,6 +239,26 @@ step: 0.1
 
 .color_transparent(@color:'main') {
     .tcolor(@color);
+}
+
+.tcolor-on(@color:main 0; @on; @prop:color;) when (@on = none) {
+    .tcolor(@color; @prop;);
+}
+
+.tcolor-on(@color:main 0; @on; @prop:color) when ( length(@on) = 2 ) {
+    @level:extract(@on, 2);
+    tc:@color;
+    on:@on;
+    & when (@level > 3) {
+        use:first;
+        .color(@color; @prop;);
+    }
+    & when (@level < 4) {
+        @color_level: extract(@color, 2);
+        use:second;
+        second:extract(@color, 1) (5 - @color_level);
+        .color(extract(@color, 1); (5 - @color_level); @prop);
+    }
 }
 
 

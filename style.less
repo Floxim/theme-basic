@@ -25,6 +25,7 @@ body {
     &__section_content {
         flex:1;
     }
+    transition: opacity 0.2s ease;
 }
 
 // добавляем position:relative для контейнеров внутри шапки/футера, чтобы перекрыть тени
@@ -48,7 +49,7 @@ a img {
 }
 
 .fx-container_width_layout {
-    &.fx-content_parent-width_full {
+    &.fx-content_parent-width_full, &.fx-content_parent-width_container {
         .layout_width();
     }
 }

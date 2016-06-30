@@ -172,26 +172,37 @@ step: 0.1
     }
 }
 
+.font(@font) when (@font = none) {
+    
+}
+
 // 'nav 16px bold italic uppercase underline'
-.font(@font) {
+.font(@font) when not(@font = none) {
     @family: extract(@font, 1);
     & when not(@family = inherit) {
         .font-family(extract(@font, 1));
     }
     @size: extract(@font, 2);
-    & when not(@size = inherit) {
+    & when not(@size = inherit) and (length(@font) > 1) {
         font-size: @size;
     }
     @weight: extract(@font, 3);
-    & when not(@weight = inherit) {
+    & when not(@weight = inherit) and (length(@font) > 2) {
         font-weight: @weight;
     }
-    font-style: extract(@font, 4);
-    text-transform: extract( @font, 5);
+    @style: extract(@font, 4);
+    & when not(@style = inherit) and (length(@font) > 3) {
+        font-style: @style;
+    }
+    @transform: extract( @font, 5);
+    & when not(@transform = inherit) and (length(@font) > 4) { 
+        text-transform: @transform;
+    }
     & when ( length(@font) > 5 ) {
         text-decoration: extract( @font, 6);
     }
 }
+
 
 .font-family(@family:main) {
     .wf-active & {
@@ -226,7 +237,11 @@ step: 0.1
     @{prop}:@@var;
 }
 
-.tcolor(@color:main; @level:0; @prop:color) when (length(@color) = 1) {
+.tcolor (@color) when (@color = none) {
+    
+}
+
+.tcolor(@color:main; @level:0; @prop:color) when (length(@color) = 1) and not(@color = none) {
     .color(@color; @level; @prop);
     .dark({
         .color(@color; (5 - @level); @prop);

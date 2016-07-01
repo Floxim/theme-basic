@@ -262,16 +262,11 @@ step: 0.1
 
 .tcolor-on(@color:main 0; @on; @prop:color) when ( length(@on) = 2 ) {
     @level:extract(@on, 2);
-    tc:@color;
-    on:@on;
     & when (@level > 3) {
-        use:first;
         .color(@color; @prop;);
     }
     & when (@level < 4) {
         @color_level: extract(@color, 2);
-        use:second;
-        second:extract(@color, 1) (5 - @color_level);
         .color(extract(@color, 1); (5 - @color_level); @prop);
     }
 }

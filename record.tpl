@@ -26,11 +26,16 @@
 
 {preset id="record#person" of="floxim.corporate.person:record"}
     {use as="record_extra_top"}
-        <div fx:aif="$occupation">
-            <span fx:e="extra-name">{$name}</span>
-            <span fx:e="extra-separator">&bull;</span>
-            <span fx:e="occupation" fx:aif="$occupation">{$occupation/}</span>
-        </div>
+        <span fx:e="extra-name">{$name}</span>
+        <span fx:e="extra-separator">&bull;</span>
+        <span fx:e="occupation" fx:aif="$occupation">{$occupation/}</span>
+    {/use}
+{/preset}
+
+
+{preset id="record#person_unnamed" of="floxim.corporate.person:record"}
+    {use as="record_extra_top"}
+        <span fx:e="extra-birthday">{$birthday}</span>
     {/use}
 {/preset}
 

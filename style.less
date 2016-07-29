@@ -13,7 +13,9 @@ body {
     overflow-x:hidden;
 }
 
-.layout {
+//@namespace:theme--floxim--basic--;
+
+.@{namespace}layout {
     width:100%;
     display: flex;
     min-height: 100%;
@@ -30,9 +32,8 @@ body {
 
 // добавляем position:relative для контейнеров внутри шапки/футера, чтобы перекрыть тени
 // хак =(
-.layout__section .fx-container {
+.fx-container {
     position:relative;
-    //z-index:1;
 }
 a {
     color:inherit;
@@ -130,9 +131,6 @@ a img {
         }
     }
 }
-
-
-
 
 @color_names: main alt third;
 @color_levels:0 1 2 3 4 5;

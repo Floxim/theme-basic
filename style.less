@@ -20,6 +20,7 @@ body {
     display: flex;
     min-height: 100%;
     flex-direction: column;
+    /*
     &__section {
         flex-direction:column;
         align-self:center;
@@ -27,6 +28,7 @@ body {
     &__section_content {
         flex:1;
     }
+    */
     transition: opacity 0.2s ease;
 }
 
@@ -96,20 +98,6 @@ a img {
     }
 }
 
-.fx-container_padding {
-    &_all {
-        padding:@layout_padding_vertical @layout_padding_horizontal;
-    }
-    &_ns {
-        padding-top:@layout_padding_vertical;
-        padding-bottom:@layout_padding_vertical;
-    }
-    &_we {
-        padding-left:@layout_padding_horizontal;
-        padding-right:@layout_padding_horizontal;
-    }
-}
-
 .show-grid {
     position:fixed;
     z-index:0;
@@ -131,27 +119,3 @@ a img {
         }
     }
 }
-
-@color_names: main alt third;
-@color_levels:0 1 2 3 4 5;
-
-
-.color_level_loop(@rules; @selector; @name; @i:length(@color_levels) ) when (@i > 0) {
-  @level: extract(@color_levels, @i);
-  @color_var: 'color-@{name}-@{level}';
-  @{selector}_@{name}-@{level} {
-    @current-color:@@color_var;
-    @rules();
-  }
-  .color_level_loop(@rules; @selector; @name; (@i - 1) );
-}
-
-.color_loop(@rules; @selector; @i:length(@color_names) ) when (@i > 0) {
-  @name: extract(@color_names, @i);
-  .color_level_loop(@rules; @selector; @name);
-  .color_loop(@rules; @selector; (@i - 1) );
-}
-
-.color_loop({
-  background-color:@current-color;
-}; ~".fx-container_bg-color");

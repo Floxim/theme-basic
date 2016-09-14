@@ -12,14 +12,15 @@
     {/js}
 </head>
 <body fx:b="body">
-    <div fx:b="layout" fx:container="layout">
+    <div fx:b="layout" fx:container="layout" fx:styled-inline="id:layout">
         {default $use_content_area = true /}
         <header 
             fx:e="section header" 
             fx:area="header" 
             fx:area-name="Шапка" 
             fx:area-scope="nav"
-            fx:container="layout_header">
+            fx:b="section"
+            fx:styled-inline="id:header">
             
         </header>
         <section 
@@ -29,15 +30,17 @@
             fx:if="$use_content_area"
             fx:e="section content"
             fx:area-scope="content"
-            fx:container="layout_content">
+            fx:b="section"
+            fx:styled-inline="id:content">
 
         </section>
         <footer 
             fx:e="section footer"
-            fx:container="layout_footer"
             fx:area="footer" 
             fx:area-name="Подвал" 
-            fx:area-scope="nav">
+            fx:area-scope="nav"
+            fx:b="section"
+            fx:styled-inline="id:footer">
             
         </footer>
     </div>

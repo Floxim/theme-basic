@@ -55,6 +55,10 @@ units: px
 */
 @max_width:1000px;
 
+
+@layout_bp: (@max_width / (@layout_width / 100)) ~"";
+
+
 /*
 label: Основной
 type: colorset
@@ -155,12 +159,14 @@ step: 0.1
     max-width:@max_width;
     align-self:center;
 
+    /*
     @bp: (@max_width / (@layout_width/100)) ~"";
 
     @media screen and (min-width: @bp) {
         width:auto;
         align-self:stretch;
     }
+    */
 }
 
 .clearfix() {
@@ -169,6 +175,54 @@ step: 0.1
         visibility:hidden;
         display:block;
         clear:both;
+    }
+}
+
+.width(@width) {
+    & when  (@width = full) {
+        .fx-block_parent-width_full& {
+            width:100%;
+            max-width:none;
+        }
+        .fx-block_parent-width_layout& {
+            
+            @f_margin: 50 - (5000 / @layout_width);
+            
+            @f_bp_margin: ~'calc( ( 100vw - ' @max_width ~') / -2 )';
+            
+            align-self: stretch;
+            
+            @outer_padding: ( 100 - @layout_width) / 2;
+            
+            margin-left: @f_margin;
+            margin-right: @f_margin;
+            
+            @media (min-width: @layout_bp) {
+                margin-left:@f_bp_margin;
+                margin-right:@f_bp_margin;
+            }
+        }
+    }
+    & when (@width = layout) {
+        .fx-block_parent-width_full& {
+            .layout_width();
+        }
+        .fx-block_parent-width_layout& {
+            //width:100%;
+            align-self: stretch;
+            max-width:none;
+        }
+    }
+    & when (@width = container) {
+        //width:100%;
+        align-self: stretch;
+        max-width:none;
+    }
+    & when (@width = auto) {
+        width:auto;
+    }
+    & when (isnumber(@width)) {
+        width: @width * 1%;
     }
 }
 
@@ -225,7 +279,7 @@ step: 0.1
 }
 
 .color(@color; ... ) when (@color = none) {
-    nocolor:true;
+    //nocolor:true;
 }
 
 .color(@color; @prop:color) when (length(@color) = 2) {
@@ -281,7 +335,7 @@ step: 0.1
 }
 
 .dark(@rules) {
-    .fx-content_parent-lightness_dark& {
+    .fx-block_lightness_dark& {
         @rules();
     }
 }
@@ -338,3 +392,114 @@ step: 0.1
     }
     
 }
+
+.background (@background) when (@background = none) {
+    background:none;
+}
+
+// light, color alt 1 0, linear 80deg alt 2 0.5 alt 3 0.2;
+/*
+
+    lightness,
+        
+    type counted_props,
+    values,
+    size position repeat,
+
+    type2 counted_props
+    values,
+    size position repeat
+
+    ...
+
+*/
+
+.background(@bg) {
+    .bgi-loop(@bg; 1);
+}
+
+.bgi-loop(@items; @index) when (@index < length(@items) / 3) {
+    @real_index: (@index - 1) * 3 + 2;
+    @type_group: extract(@items, @real_index);
+    @type: extract(@type_group, 1);
+    @vals: extract(@items, @real_index + 1);
+    @sizes: extract(@items, @real_index + 2);
+    
+    & when (@type = linear) {
+        .bg-linear (extract(@type_group, 2), @vals);
+    }
+    
+    & when (@type = image) {
+        .bg-image ( @vals );
+    }
+    
+    & when (@type = color) {
+        .bg-color(@vals);
+    }
+    
+    & when not(@type = color) {
+        .bg-sizing(@sizes);
+    }
+    
+    .bgi-loop(@items; @index + 1);
+}
+
+.bg-image(@vals) {
+    background+:url(@vals);
+}
+
+.bg-linear(@dir; @points) {
+    background+:~"linear-gradient(" @dir;
+    .bg-linear-point(@points);
+    background+_:~")";
+}
+
+.bg-color(@vals) {
+    @c:extract(@vals, 1);
+    @l:extract(@vals, 2);
+    @o:extract(@vals, 3);
+    @cvar:'color-@{c}-@{l}';
+    
+    background+: fade(@@cvar, @o * 100%)
+}
+
+.bg-linear-point(@points; @index:1) when (@index < length(@points) ) {
+    
+    @c:extract(@points, @index);
+    @l:extract(@points, @index + 1);
+    @o:extract(@points, @index + 2);
+    @p:extract(@points, @index + 3);
+    @cvar:'color-@{c}-@{l}';
+    background+: fade(@@cvar, @o * 100%) @p;
+    .bg-linear-point(@points; @index+4);
+}
+
+.bg-sizing(@props) {
+    background+_: @props;
+}
+
+/*
+.floxim--nav--breadcrumbs--breadcrumbs {
+    @bg:
+        light,
+        
+        linear 80deg,
+        main 2 0.5 0 main 1 0.1 50% alt 2 1 80%,
+        50% 50% no-repeat,
+        
+        linear 45deg,
+        main 5 0.1 0 main 3 0.1 100%,
+        100% 100% no-repeat,
+        
+        image,
+        "http://lesstester.com/assets/img/logo.png",
+        ~"0% 0% / 20% 20%" repeat-x,
+        
+        color, 
+        alt 5 1, 
+        none
+        ;
+        
+    .background(@bg);
+}
+*/

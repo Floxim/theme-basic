@@ -1,0 +1,42 @@
+/*
+name: d
+vars:
+    background:
+        type: css-background
+        label: Фон
+    margin:
+        type: measures
+        prop: margin
+        label: margin
+    padding:
+        type: measures
+        prop: padding
+        label: padding
+    width:
+        type: livesearch
+        label: Ширина
+        values:
+            full: На весь экран
+            container: Ширина контейнера
+            auto: Авто
+            layout: Ширина лейаута
+container:
+    lightness: background
+    width: width
+*/
+.section_style_default(
+    @background:none;
+    @margin:0rem;
+    @padding:0rem;
+    @width:layout;
+) {
+    display:flex;
+    flex-direction: column;
+    .background(@background);
+    margin:@margin;
+    padding:@padding;
+    .width(@width);
+    & when (@width = auto) {
+        align-self:center;
+    }
+}

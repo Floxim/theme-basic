@@ -1,0 +1,19 @@
+/*
+name: la
+vars: 
+    background:
+        type: css-background
+        label: Фон
+    width:
+        type: hidden
+container:
+    lightness: background
+    width: width
+*/
+
+.layout_style_default(
+    @background:none;
+    @width:full;
+) {
+    .background(@background);
+}

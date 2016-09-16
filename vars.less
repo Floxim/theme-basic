@@ -252,8 +252,9 @@ step: 0.1
     & when not(@transform = inherit) and (length(@font) > 4) { 
         text-transform: @transform;
     }
-    & when ( length(@font) > 5 ) {
-        text-decoration: extract( @font, 6);
+    @decoration: extract( @font, 6);
+    & when not(@decoration = inherit) and (length(@font) > 5) { 
+        text-decoration: @decoration;
     }
 }
 

@@ -216,12 +216,17 @@ step: 0.1
     & when (@width = none) {
         align-self: stretch;
         max-width:none;
+        .fx-block& {
+            width:auto;
+        }
     }
     & when (@width = auto) {
         width:auto;
     }
     & when (isnumber(@width)) {
-        width: @width * 1%;
+        .fx-block& {
+            width: @width * 1%;
+        }
     }
 }
 

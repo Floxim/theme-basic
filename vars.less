@@ -95,58 +95,6 @@ tab: colors
 @color-alt:@color-alt-1;
 @color_alt_inverted:@color-alt-4;
 
-/*
-label: Горизонтальный отступ
-type: number
-units: vw
-tab: sizes
-min: 0.2
-max: 5
-step: 0.1
-*/
-@layout_padding_horizontal:30px;
-
-@x: @layout_padding_horizontal;
-
-
-/*
-label: Вертикальный отступ
-type: number
-units: vw
-tab: sizes
-min: 0.2
-max: 5
-step: 0.1
-*/
-@layout_padding_vertical:20px;
-
-@y: @layout_padding_vertical;
-
-@pad_min_width:700px;
-
-.pad() {
-    padding: @layout_padding_vertical @layout_padding_horizontal;
-}
-
-.on_padded(@rules) {
-    .layout__section > &, .columns__col_padded > & {
-        @rules();
-    }
-}
-
-.antipad_y() {
-
-}
-
-.antipad_x() {
-
-}
-
-.antipad() {
-    .antipad_x();
-    .antipad_y();
-}
-
 .media_min(@width, @rules) {
     @media screen and (min-width: @width) {
         @rules();
@@ -158,15 +106,6 @@ step: 0.1
     min-width:0;
     max-width:@max_width;
     align-self:center;
-
-    /*
-    @bp: (@max_width / (@layout_width/100)) ~"";
-
-    @media screen and (min-width: @bp) {
-        width:auto;
-        align-self:stretch;
-    }
-    */
 }
 
 .clearfix() {
@@ -346,31 +285,19 @@ step: 0.1
     .tcolor(extract(@color, 1); extract(@color, 2); @prop);
 }
 
-.color_transparent(@color:'main') {
-    .tcolor(@color);
-}
 
 .tcolor-on(@color:main 0; @on; @prop:color;) when (@on = none) {
-    .tcolor(@color; @prop;);
+    .tcolor(@color; @prop);
 }
 
 .tcolor-on(@color:main 0; @on; @prop:color) when ( length(@on) = 2 ) {
     @level:extract(@on, 2);
     & when (@level > 3) {
-        .color(@color; @prop;);
+        .color(@color; @prop);
     }
     & when (@level < 4) {
         @color_level: extract(@color, 2);
         .color(extract(@color, 1); (5 - @color_level); @prop);
-    }
-}
-
-
-
-.pad_x() {
-    .fx-content_parent-padding_none&, .fx-content_parent-padding_ns& {
-        padding-left:@layout_padding_horizontal;
-        padding-right:@layout_padding_horizontal;
     }
 }
 
@@ -437,23 +364,6 @@ step: 0.1
     background:none;
 }
 
-// light, color alt 1 0, linear 80deg alt 2 0.5 alt 3 0.2;
-/*
-
-    lightness,
-        
-    type counted_props,
-    values,
-    size position repeat,
-
-    type2 counted_props
-    values,
-    size position repeat
-
-    ...
-
-*/
-
 .background(@bg) {
     .bgi-loop(@bg; 1);
 }
@@ -517,29 +427,3 @@ step: 0.1
 .bg-sizing(@props) {
     background+_: @props;
 }
-
-/*
-.floxim--nav--breadcrumbs--breadcrumbs {
-    @bg:
-        light,
-        
-        linear 80deg,
-        main 2 0.5 0 main 1 0.1 50% alt 2 1 80%,
-        50% 50% no-repeat,
-        
-        linear 45deg,
-        main 5 0.1 0 main 3 0.1 100%,
-        100% 100% no-repeat,
-        
-        image,
-        "http://lesstester.com/assets/img/logo.png",
-        ~"0% 0% / 20% 20%" repeat-x,
-        
-        color, 
-        alt 5 1, 
-        none
-        ;
-        
-    .background(@bg);
-}
-*/

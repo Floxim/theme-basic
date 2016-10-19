@@ -332,13 +332,15 @@ tab: colors
 }
 
 .text-align() {
-    text-align:left;
-    .centered({
+    .fx-block_parent-align_left& {
+        text-align:left;
+    }
+    .fx-block_parent-align_center& {
         text-align:center;
-    });
-    .right({
+    }
+    .fx-block_parent-align_right& {
         text-align:right;
-    });
+    }
 }
 
 .text(@font-size:17px; @color:main) {

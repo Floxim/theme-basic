@@ -55,8 +55,18 @@ units: px
 */
 @max_width:1000px;
 
+@min_width:900px;
 
-@layout_bp: (@max_width / (@layout_width / 100)) ~"";
+
+@lw: unit(@layout_width/100);
+
+
+@max_bp: (@max_width / @lw) ~"";
+@layout_bp: @max_bp; // check usage and drop!
+
+@min_bp: @min_width;
+
+@em: 16px * (@max_width / 1200);
 
 
 /*
@@ -102,10 +112,19 @@ tab: colors
 }
 
 .layout_width() {
-    width:@layout_width;
+    
+    @m_vw: ( (@min_width - @max_width) * @lw ) / (@min_width * @lw - @max_width);
+    @m_px: (@max_width * @lw - @max_width * @m_vw)/@lw;
+    
+    width: ~"calc(" unit(@m_vw * 100, vw) ~" + " @m_px ~")";
+    
     min-width:0;
     max-width:@max_width;
     align-self:center;
+    
+    @media (max-width: @min_bp) {
+        width:100%;
+    }
 }
 
 .clearfix() {
@@ -125,20 +144,29 @@ tab: colors
         }
         .fx-block_parent-width_layout& {
             
-            @f_margin: 50 - (5000 / @layout_width);
-            
-            @f_bp_margin: ~'calc( ( 100vw - ' @max_width ~') / -2 )';
-            
             align-self: stretch;
             
-            @outer_padding: ( 100 - @layout_width) / 2;
+            @f_margin: 50 - (5000 / @layout_width);
             
-            margin-left: @f_margin;
-            margin-right: @f_margin;
+            @x: -1 * (@max_width * @lw - @max_width) / (2 * @min_width * @lw - 2 * @max_width);
+            @y: -1 * (2 * @max_width * @x - @max_width * @lw + @max_width)/(2 * @lw);
             
-            @media (min-width: @layout_bp) {
+            @margin: ~"calc( " unit(@x * 100, vw) ~" + " @y ~")";
+            
+            margin-left:@margin;
+            margin-right:@margin;
+            
+            @media (min-width: @max_bp) {
+                
+                @f_bp_margin: ~'calc( ( 100vw - ' @max_width ~') / -2 )';
+                
                 margin-left:@f_bp_margin;
                 margin-right:@f_bp_margin;
+            }
+            
+            @media (max-width: @min_bp) {
+                margin-left:0;
+                margin-right:0;
             }
         }
     }
@@ -208,6 +236,14 @@ tab: colors
     
 }
 
+.font_min_size(@size, @min) {
+    @fbp: @min / ( (@em / (@max_width / @lw) * 100 / @lw) * ( @size / 16) )*100;
+    @media (max-width: ( @fbp) ) {
+        orig:@size;
+        font-size:@min;
+    }
+}
+
 // 'nav 16px bold italic uppercase underline'
 .font(@font) when not(@font = none) {
     @family: extract(@font, 1);
@@ -216,7 +252,13 @@ tab: colors
     }
     @size: extract(@font, 2);
     & when not(@size = inherit) and (length(@font) > 1) {
-        font-size: @size;
+        font-size:unit(@size/16, rem);
+        & when (@size < 25px) and (@size > 14) {
+            .font_min_size(@size, 14px);
+        }
+        & when (@size < 15px) {
+            .font_min_size(@size, 12px);
+        }
     }
     @weight: extract(@font, 3);
     & when not(@weight = inherit) and (length(@font) > 2) {
@@ -231,8 +273,24 @@ tab: colors
         text-transform: @transform;
     }
     @decoration: extract( @font, 6);
-    & when not(@decoration = inherit) and (length(@font) > 5) { 
+    & when not(@decoration = auto) and (length(@font) > 5) { 
         text-decoration: @decoration;
+    }
+    /*
+    & when (length(@font) > 8) {
+        @color: extract(@font, 7);
+        @color_level: extract(@font, 8);
+        @color_opacity: extract(@font, 9);
+        .tcolor(@color @color_level @color_opacity);
+    }
+    */
+    & when (length(@font) > 6) {
+        @line_height: extract(@font, 7);
+        line-height: @line_height;
+    }
+    & when (length(@font) > 7) {
+        @letter_spacing: extract(@font,8);
+        letter-spacing: @letter_spacing;
     }
 }
 

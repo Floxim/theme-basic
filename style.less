@@ -9,6 +9,27 @@ html, body {
     }
 }
 
+html {
+    em:@em;
+    max:@max_width;
+    lw:@lw;
+
+    @media (min-width: @max_bp) {
+        font-size:@em;
+    }
+    @media (min-width: @min_bp) and (max-width: @max_bp) {
+
+        @fx: (@min_width - @max_width) * @em * @lw / (@max_width * @min_width * @lw - @max_width * @max_width);
+        @fpx: -1 * (@max_width * @fx - @em * @lw) / @lw;
+        @fvw: unit(@fx * 100, vw);
+
+        font-size: ~"calc(" @fvw ~" + " @fpx ~")";
+    }
+    @media (max-width: @min_bp) {
+        font-size: unit(@em / (@max_width / @lw) * 100 / @lw, vw);
+    }
+}
+
 body {
     overflow-x:hidden;
 }

@@ -507,20 +507,23 @@ tab: colors
     @top_style: extract(@top,3);
     @top_color: extract(@top, 4) extract(@top,5) extract(@top,6);
     
-    @top_right_radius: unit(extract(@left,1), px);
-    @left_size: extract(@left, 2);
-    @left_style: extract(@left,3);
-    @left_color: extract(@left, 4) extract(@left,5) extract(@left,6);
+    
+    @top_right_radius: unit(extract(@right,1), px);
+    @right_size: extract(@right, 2);
+    @right_style: extract(@right,3);
+    @right_color: extract(@right, 4) extract(@right,5) extract(@right,6);
     
     @bottom_right_radius: unit(extract(@bottom,1), px);
     @bottom_size: extract(@bottom, 2);
     @bottom_style: extract(@bottom,3);
     @bottom_color: extract(@bottom, 4) extract(@bottom,5) extract(@bottom,6);
     
-    @bottom_left_radius: unit(extract(@right,1), px);
-    @right_size: extract(@right, 2);
-    @right_style: extract(@right,3);
-    @right_color: extract(@right, 4) extract(@right,5) extract(@right,6);
+    
+    @bottom_left_radius: unit(extract(@left,1), px);
+    @left_size: extract(@left, 2);
+    @left_style: extract(@left,3);
+    @left_color: extract(@left, 4) extract(@left,5) extract(@left,6);
+    
     
     border-radius:@top_left_radius @top_right_radius @bottom_right_radius @bottom_left_radius;
     border-width:@top_size @right_size @bottom_size @left_size;

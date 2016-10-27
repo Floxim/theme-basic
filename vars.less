@@ -487,3 +487,56 @@ tab: colors
 .bg-sizing(@props) {
     background+_: @props;
 }
+
+
+.border(@props) when (@props = none) {
+    
+}
+
+// 5px 3px solid main 2 1
+// rad size style color
+
+.border(@props) when not(@props = none) {
+    @top:extract(@props,1);
+    @right:extract(@props,2);
+    @bottom:extract(@props,3);
+    @left:extract(@props,4);
+    
+    @top_left_radius: unit(extract(@top,1), px);
+    @top_size: extract(@top, 2);
+    @top_style: extract(@top,3);
+    @top_color: extract(@top, 4) extract(@top,5) extract(@top,6);
+    
+    @top_right_radius: unit(extract(@left,1), px);
+    @left_size: extract(@left, 2);
+    @left_style: extract(@left,3);
+    @left_color: extract(@left, 4) extract(@left,5) extract(@left,6);
+    
+    @bottom_right_radius: unit(extract(@bottom,1), px);
+    @bottom_size: extract(@bottom, 2);
+    @bottom_style: extract(@bottom,3);
+    @bottom_color: extract(@bottom, 4) extract(@bottom,5) extract(@bottom,6);
+    
+    @bottom_left_radius: unit(extract(@right,1), px);
+    @right_size: extract(@right, 2);
+    @right_style: extract(@right,3);
+    @right_color: extract(@right, 4) extract(@right,5) extract(@right,6);
+    
+    border-radius:@top_left_radius @top_right_radius @bottom_right_radius @bottom_left_radius;
+    border-width:@top_size @right_size @bottom_size @left_size;
+    border-style:@top_style @right_style @bottom_style @right_style;
+    
+    .border-color(@top_color);
+    .border-color(@right_color);
+    .border-color(@bottom_color);
+    .border-color(@left_color);
+}
+
+.border-color(@vals) {
+    @c:extract(@vals, 1);
+    @l:extract(@vals, 2);
+    @o:extract(@vals, 3);
+    @cvar:'color-@{c}-@{l}';
+    
+    border-color+_: fade(@@cvar, @o * 100%);
+}

@@ -121,6 +121,9 @@ tab: colors
     min-width:0;
     max-width:@max_width;
     align-self:center;
+    .fx-block_parent-align_left& {
+        align-self: flex-start;
+    }
     
     @media (max-width: @min_bp) {
         width:100%;
@@ -175,7 +178,6 @@ tab: colors
             .layout_width();
         }
         .fx-block_parent-width_layout& {
-            //width:100%;
             align-self: stretch;
             max-width:none;
         }

@@ -6,14 +6,23 @@ vars:
         label: Фон
     width:
         type: hidden
+    align:
+        type: livesearch
+        label: Выравнивание
+        values:
+            center: По центру
+            left: Слева
 container:
     lightness: background
     width: width
+    align: align
 */
 
 .layout_style_default(
     @background:none;
     @width:full;
+    @align:center;
 ) {
     .background(@background);
+    .align-items(@align);
 }

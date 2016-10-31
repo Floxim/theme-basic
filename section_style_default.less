@@ -19,15 +19,19 @@ vars:
             full: На весь экран
             none: Ширина контейнера
             layout: Ширина лейаута
+    align:
+        type: hidden
 container:
     lightness: background
     width: width
+    align: align
 */
 .section_style_default(
     @background:none;
     @margin:0rem;
     @padding:0rem;
     @width:layout;
+    @align:left;
 ) {
     display:flex;
     flex-direction: column;

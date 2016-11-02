@@ -321,8 +321,18 @@ tab: colors
     //nocolor:true;
 }
 
-.color(@color; @prop:color) when (length(@color) = 2) {
-    .color(extract(@color, 1); extract(@color, 2); @prop);
+.color(@color; @prop:color) when (length(@color) >= 2) {
+    @c:extract(@color,1);
+    @l:extract(@color,2);
+    @var:'color-@{c}-@{l}';
+    & when (length(@color) > 2) {
+        @o:extract(@color,3);
+        @{prop}:fade(@@var, @o * 100);
+    }
+    & when (length(@color) = 2) {
+        @{prop}:@@var;
+    }
+    //.color(extract(@color, 1); extract(@color, 2); @prop);
 } 
 
 .color(@color:main; @level:0; @prop:color) when (length(@color) = 1) and not(@color = none) {

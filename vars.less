@@ -292,7 +292,9 @@ tab: colors
     }
     & when (length(@font) > 7) {
         @letter_spacing: extract(@font,8);
-        letter-spacing: @letter_spacing;
+        & when not(@letter_spacing = em) {
+            letter-spacing: @letter_spacing;
+        }
     }
 }
 
@@ -360,7 +362,7 @@ tab: colors
     .tcolor(@color; @prop);
 }
 
-.tcolor-on(@color:main 0; @on; @prop:color) when ( length(@on) = 2 ) {
+.tcolor-on(@color:main 0; @on; @prop:color) when ( length(@on) >= 2 ) {
     @level:extract(@on, 2);
     & when (@level > 3) {
         .color(@color; @prop);
@@ -368,6 +370,19 @@ tab: colors
     & when (@level < 4) {
         @color_level: extract(@color, 2);
         .color(extract(@color, 1); (5 - @color_level); @prop);
+    }
+}
+
+.tcolor-on-bg (@color: main 0; @bg; @prop: color) {
+    @lightness: replace(extract(@bg, 1), "custom_", '');
+    & when (@lightness = none) {
+        .tcolor(@color; @prop);
+    }
+    & when (@lightness = light) {
+        .tcolor-on(@color; main 5; @prop);
+    }
+    & when (@lightness = dark) {
+        .tcolor-on(@color; main 0; @prop);
     }
 }
 
@@ -514,6 +529,11 @@ tab: colors
     @bottom:extract(@props,3);
     @left:extract(@props,4);
     
+    btop: @top;
+    bright: @right;
+    bbottom: @bottom;
+    bleft: @left;
+    
     @top_left_radius: unit(extract(@top,1), px);
     @top_size: extract(@top, 2);
     @top_style: extract(@top,3);
@@ -539,7 +559,7 @@ tab: colors
     
     border-radius:@top_left_radius @top_right_radius @bottom_right_radius @bottom_left_radius;
     border-width:@top_size @right_size @bottom_size @left_size;
-    border-style:@top_style @right_style @bottom_style @right_style;
+    border-style:@top_style @right_style @bottom_style @left_style;
     
     .border-color(@top_color);
     .border-color(@right_color);
@@ -554,4 +574,45 @@ tab: colors
     @cvar:'color-@{c}-@{l}';
     
     border-color+_: fade(@@cvar, @o * 100%);
+}
+
+
+.box-shadow(@vals) when (@vals = none) {}
+
+.box-shadow(@vals) when not(@vals = none) and ( length( extract(@vals, 1) ) > 1) {
+     calls: length( extract(@vals, 1) );
+    .box-shadow-loop(@vals, 1);
+}
+
+.box-shadow(@vals) when not(@vals = none) and ( length( extract(@vals, 1) ) = 1) {
+    calln:true;
+  	.box-shadow-loop(@vals none, 1);
+}
+
+.box-shadow-loop(@vals; @index) when (@index <= length(@vals) ) and (length( extract(@vals, @index) ) = 8) {
+    @level: extract(@vals, @index);
+    @type: extract(@level, 1);
+
+    @x: unit(extract(@level, 2), px);
+    @y: unit(extract(@level, 3), px);
+    @blur: unit(extract(@level, 4), px);
+    @spread:  unit(extract(@level, 5), px);
+
+    @c: extract(@level, 6);
+    @l: extract(@level, 7);
+    @o: extract(@level, 8);
+
+    @cvar:'color-@{c}-@{l}';
+    @color: fade(@@cvar, @o * 100%);
+
+
+    & when (@type = inset) {
+        box-shadow+:inset @x;
+    }
+    & when (@type = outer) {
+        box-shadow+: @x;
+    }
+
+    box-shadow+_: @y @blur @spread @color;
+    .box-shadow-loop(@vals; @index + 1);
 }

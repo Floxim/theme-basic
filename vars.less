@@ -255,6 +255,9 @@ tab: colors
     @size: extract(@font, 2);
     & when not(@size = inherit) and (length(@font) > 1) {
         font-size:unit(@size/16, rem);
+        & when (@size >= 25px) {
+            .font_min_size(@size, 20px);
+        } 
         & when (@size < 25px) and (@size > 14) {
             .font_min_size(@size, 14px);
         }

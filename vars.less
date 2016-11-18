@@ -142,7 +142,8 @@ tab: colors
 .width(@width) {
     & when  (@width = full) {
         .fx-block_parent-width_full& {
-            width:100%;
+            //width:100%;
+            align-self: stretch;
             max-width:none;
         }
         .fx-block_parent-width_layout& {
@@ -241,7 +242,6 @@ tab: colors
 .font_min_size(@size, @min) {
     @fbp: @min / ( (@em / (@max_width / @lw) * 100 / @lw) * ( @size / 16) )*100;
     @media (max-width: ( @fbp) ) {
-        orig:@size;
         font-size:@min;
     }
 }
@@ -307,9 +307,11 @@ tab: colors
         @var:'font_@{family}';
         font-family:@@var;
     }
+    /*
     .wf-loading & {
         color: transparent !important;
     }
+    */
 }
 
 .font-style(@val) when (length(@val) = 1) {
@@ -554,15 +556,36 @@ tab: colors
     @left_style: extract(@left,3);
     @left_color: extract(@left, 4) extract(@left,5) extract(@left,6);
     
+    @all_size: @top_size @right_size @bottom_size @left_size;
     
-    border-radius:@top_left_radius @top_right_radius @bottom_right_radius @bottom_left_radius;
-    border-width:@top_size @right_size @bottom_size @left_size;
-    border-style:@top_style @right_style @bottom_style @left_style;
+    & when 
+        not(@top_size = 0), 
+        not(@right_size = 0), 
+        not(@bottom_size = 0), 
+        not(@left_size = 0) 
+    {
+            
+        border-width:@top_size @right_size @bottom_size @left_size;
+        border-style:@top_style @right_style @bottom_style @left_style;
+
+        .border-color(@top_color);
+        .border-color(@right_color);
+        .border-color(@bottom_color);
+        .border-color(@left_color);
+    }
     
-    .border-color(@top_color);
-    .border-color(@right_color);
-    .border-color(@bottom_color);
-    .border-color(@left_color);
+    & when 
+        not(@top_left_radius = 0), 
+        not(@top_right_radius = 0), 
+        not(@bottom_right_radius = 0), 
+        not(@bottom_left_radius = 0) 
+    {
+            border-radius:@top_left_radius @top_right_radius @bottom_right_radius @bottom_left_radius;
+    }
+    
+    & when (@top_size = 0) and (@right_size = 0) and (@bottom_size = 0) and (@left_size = 0) {
+        border:none;
+    }
 }
 
 .border-color(@vals) {

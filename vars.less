@@ -17,6 +17,24 @@
 @color-third-4: #010304;
 @color-third-5: #020405;
 
+.media_lt(@size; @rules) {
+    @media (max-width: @size) {
+        @rules();
+    }
+}
+
+.media_between(@min_size; @max_size; @rules) {
+    @media (min-width: @min_size) and (max-width: @max_size) {
+        @rules();
+    }
+}
+
+.media_gt(@size; @rules) {
+    @media (min-width: @size) {
+        @rules();
+    }
+}
+
 
 /*
 label: Основной шрифт
@@ -61,12 +79,23 @@ units: px
 @lw: unit(@layout_width/100);
 
 
-@max_bp: (@max_width / @lw) ~"";
+@max_bp:( (@max_width / @lw) );
 @layout_bp: @max_bp; // check usage and drop!
 
 @min_bp: @min_width;
 
 @em: 16px * (@max_width / 1200);
+
+@em: 16px;
+
+.lock(
+    @property:prop;
+    @min:0px;
+    @max:100px;
+    @const:0px;
+) {
+    @{property}: ~"calc(" @const ~" + "  @min ~"+ (" unit(@max - @min) ~") * ((100vw - " @min_bp ~") / (" unit(@max_bp - @min_bp) ~")))";
+}
 
 
 /*
@@ -111,29 +140,6 @@ tab: colors
     }
 }
 
-.layout_width() {
-    
-    @m_vw: ( (@min_width - @max_width) * @lw ) / (@min_width * @lw - @max_width);
-    @m_px: (@max_width * @lw - @max_width * @m_vw)/@lw;
-    
-    width: ~"calc(" unit(@m_vw * 100, vw) ~" + " @m_px ~")";
-    
-    min-width:0;
-    max-width:@max_width;
-    align-self:center;
-    .fx-block_parent-align_left& {
-        align-self: flex-start;
-    }
-    
-    .fx-block_own-align_center& {
-        align-self:center;
-    }
-    
-    @media (max-width: @min_bp) {
-        width:100%;
-    }
-}
-
 .clearfix() {
     &:after {
         content:'';
@@ -143,30 +149,65 @@ tab: colors
     }
 }
 
-.width(@width) {
+
+// width control
+.width(@width; @own_margin:0px 0px 0px 0px;) {
+    
+    @own_left_margin: unit(extract(@own_margin, 4), rem);
+    @own_right_margin: unit(extract(@own_margin, 2), rem);
+    
     & when  (@width = full) {
+        
+        // full-width block inside a full-width parent 
         .fx-block_parent-width_full& {
-            //width:100%;
             align-self: stretch;
             max-width:none;
         }
+        
+        // full-width block inside a layout-width parent
         .fx-block_parent-width_layout& {
             
-            align-self: stretch;
+            align-self:stretch;
             
-            @f_margin: 50 - (5000 / @layout_width);
+            @media (max-width:@min_bp) {
+                margin-left:@own_left_margin;
+                margin-right:@own_right_margin;
+            }
+            
+            @media (min-width:@min_bp) and (max-width:@max_bp) {
+                // lock  
+                @start_margin: (@max_bp - @max_width) * -0.5;
+                .lock(
+                    @property: margin-left; 
+                    @min: 0px; 
+                    @max: @start_margin;
+                    @const:@own_left_margin;
+                );
+                .lock(
+                    @property: margin-right; 
+                    @min: 0px; 
+                    @max: @start_margin;
+                    @const: @own_right_margin;
+                );
+            }
+            @media (min-width:@max_bp) {
+                margin-left: ~"calc( (100vw - " @max_width ~") * -0.5 + " @own_left_margin ~")";
+                margin-right: ~"calc( (100vw - " @max_width ~") * -0.5 + " @own_right_margin ~")";
+            }
+            /*
+            align-self: stretch;
             
             @x: -1 * (@max_width * @lw - @max_width) / (2 * @min_width * @lw - 2 * @max_width);
             @y: -1 * (2 * @max_width * @x - @max_width * @lw + @max_width)/(2 * @lw);
             
-            @margin: ~"calc( " unit(@x * 100, vw) ~" + " @y ~")";
+            @margin: ~"calc( " unit(@x * 100, %) ~" + " @y ~")";
             
             margin-left:@margin;
             margin-right:@margin;
             
             @media (min-width: @max_bp) {
                 
-                @f_bp_margin: ~'calc( ( 100vw - ' @max_width ~') / -2 )';
+                @f_bp_margin: ~'calc( ( 100% - ' @max_width ~') / -2 )';
                 
                 margin-left:@f_bp_margin;
                 margin-right:@f_bp_margin;
@@ -176,17 +217,25 @@ tab: colors
                 margin-left:0;
                 margin-right:0;
             }
+            */
+            
         }
     }
     & when (@width = layout) {
+        
+        // layout-width block inside a full-width parent
         .fx-block_parent-width_full& {
             .layout_width();
         }
+        
+        // layout-width block inside a layout-width parent
         .fx-block_parent-width_layout& {
             align-self: stretch;
             max-width:none;
         }
     }
+    
+    // auto-width
     & when (@width = none) {
         align-self: stretch;
         max-width:none;
@@ -640,4 +689,40 @@ tab: colors
 
     box-shadow+_: @y @blur @spread @color;
     .box-shadow-loop(@vals; @index + 1);
+}
+
+.layout_width() {
+    
+    align-self: stretch;
+    
+    .media_lt(@min_bp, {
+      margin-left:0;
+      margin-right:0;
+    });
+  
+    .media_between(
+        @min_bp, 
+        @max_bp, 
+        {
+        
+            @max_margin: (@max_bp - @max_width) / 2;
+
+            .lock(
+                @property: margin-left; 
+                @min: 0px; 
+                @max: @max_margin; 
+            );
+            .lock(
+                @property: margin-right; 
+                @min: 0px; 
+                @max: @max_margin; 
+            );
+        }
+    );
+
+    .media_gt(@max_bp, {
+        @margin: ~"calc( (100vw - " @max_width ~") / 2)";
+        margin-left:@margin;
+        margin-right:@margin;
+    });
 }

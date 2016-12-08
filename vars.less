@@ -157,7 +157,8 @@ tab: colors
 
 
 // width control
-.width(@width; @own_margin:0px 0px 0px 0px;) {
+.width(@width; @own_margin:0px 0px 0px 0px;) when (length(@own_margin) = 4) {
+    
     @own_left_margin: unit(extract(@own_margin, 4), rem);
     @own_right_margin: unit(extract(@own_margin, 2), rem);
     

@@ -180,50 +180,45 @@ tab: colors
                 margin-right:@own_right_margin;
             }
             
-            @media (min-width:@min_bp) and (max-width:@max_bp) {
-                // lock  
-                @start_margin: (@max_bp - @max_width) * -0.5;
-                .lock(
-                    @property: margin-left; 
-                    @min: 0px; 
-                    @max: @start_margin;
-                    @const:@own_left_margin;
-                );
-                .lock(
-                    @property: margin-right; 
-                    @min: 0px; 
-                    @max: @start_margin;
-                    @const: @own_right_margin;
-                );
+            .fx-block_parent-align-container_center& {
+                @media (min-width:@min_bp) and (max-width:@max_bp) {
+                    // lock  
+                    @start_margin: (@max_bp - @max_width) * -0.5;
+                    .lock(
+                        @property: margin-left; 
+                        @min: 0px; 
+                        @max: @start_margin;
+                        @const:@own_left_margin;
+                    );
+                    .lock(
+                        @property: margin-right; 
+                        @min: 0px; 
+                        @max: @start_margin;
+                        @const: @own_right_margin;
+                    );
+                }
+                @media (min-width:@max_bp) {
+                    margin-left: ~"calc( (100vw - " @max_width ~") * -0.5 + " @own_left_margin ~")";
+                    margin-right: ~"calc( (100vw - " @max_width ~") * -0.5 + " @own_right_margin ~")";
+                }
             }
-            @media (min-width:@max_bp) {
-                margin-left: ~"calc( (100vw - " @max_width ~") * -0.5 + " @own_left_margin ~")";
-                margin-right: ~"calc( (100vw - " @max_width ~") * -0.5 + " @own_right_margin ~")";
-            }
-            /*
-            align-self: stretch;
             
-            @x: -1 * (@max_width * @lw - @max_width) / (2 * @min_width * @lw - 2 * @max_width);
-            @y: -1 * (2 * @max_width * @x - @max_width * @lw + @max_width)/(2 * @lw);
-            
-            @margin: ~"calc( " unit(@x * 100, %) ~" + " @y ~")";
-            
-            margin-left:@margin;
-            margin-right:@margin;
-            
-            @media (min-width: @max_bp) {
+            .fx-block_parent-align-container_left& {
                 
-                @f_bp_margin: ~'calc( ( 100% - ' @max_width ~') / -2 )';
-                
-                margin-left:@f_bp_margin;
-                margin-right:@f_bp_margin;
+                @media (min-width:@min_bp) and (max-width:@max_bp) {
+                    // lock  
+                    @start_margin: (@max_bp - @max_width) * -1;
+                    .lock(
+                        @property: margin-right; 
+                        @min: 0px; 
+                        @max: @start_margin;
+                        @const: @own_right_margin;
+                    );
+                }
+                @media (min-width:@max_bp) {
+                    margin-right: ~"calc( (100vw - " @max_width ~") * -1 + " @own_right_margin ~")";
+                }
             }
-            
-            @media (max-width: @min_bp) {
-                margin-left:0;
-                margin-right:0;
-            }
-            */
             
         }
     }
@@ -710,25 +705,42 @@ tab: colors
         @min_bp, 
         @max_bp, 
         {
-        
-            @max_margin: (@max_bp - @max_width) / 2;
-
-            .lock(
-                @property: margin-left; 
-                @min: 0px; 
-                @max: @max_margin; 
-            );
-            .lock(
-                @property: margin-right; 
-                @min: 0px; 
-                @max: @max_margin; 
-            );
+            
+            
+            .fx-block_parent-align_left& {
+                @max_margin: (@max_bp - @max_width);
+                .lock(
+                    @property: margin-right; 
+                    @min: 0px; 
+                    @max: @max_margin; 
+                );
+            }
+            
+            .fx-block_parent-align_center {
+                @max_margin: (@max_bp - @max_width) / 2;
+                .lock(
+                    @property: margin-left; 
+                    @min: 0px; 
+                    @max: @max_margin; 
+                );
+                .lock(
+                    @property: margin-right; 
+                    @min: 0px; 
+                    @max: @max_margin; 
+                );
+            }
         }
     );
 
     .media_gt(@max_bp, {
-        @margin: ~"calc( (100vw - " @max_width ~") / 2)";
-        margin-left:@margin;
-        margin-right:@margin;
+        .fx-block_parent-align_left& {
+            @margin: ~"calc( (100vw - " @max_width ~"))";
+            margin-right:@margin;
+        }
+        .fx-block_parent-align_center& {
+            @margin: ~"calc( (100vw - " @max_width ~") / 2)";
+            margin-left:@margin;
+            margin-right:@margin;
+        }
     });
 }

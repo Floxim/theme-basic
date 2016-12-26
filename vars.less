@@ -287,10 +287,21 @@ tab: colors
     & when (@align = right) {
         align-self: flex-end;
     }
+    & when (@align = none) {
+        .fx-block_parent-align_left& {
+            align-self: flex-start;
+        }
+        .fx-block_parent-align_center& {
+            align-self: center;
+        }
+        .fx-block_parent-align_right& {
+            align-self: flex-end;
+        }
+    }
 }
 
 .font(@font) when (@font = none) {
-    
+    .font(text 16px);
 }
 
 .font_min_size(@size, @min) {

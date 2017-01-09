@@ -162,7 +162,7 @@ tab: colors
     @own_left_margin: unit(extract(@own_margin, 4), rem);
     @own_right_margin: unit(extract(@own_margin, 2), rem);
     
-    & when  (@width = full) {
+    & when (@width = full) {
         
         // full-width block inside a full-width parent 
         .fx-block_parent-width_full& {
@@ -238,8 +238,10 @@ tab: colors
     
     // auto-width
     & when (@width = none) {
+        
         align-self: stretch;
         max-width:none;
+        
         .fx-block& {
             width:auto;
         }
@@ -650,6 +652,31 @@ tab: colors
     
     & when (@top_size = 0) and (@right_size = 0) and (@bottom_size = 0) and (@left_size = 0) {
         border:none;
+    }
+}
+
+.border-radius(@props) when (@props = none) {
+    
+}
+
+.border-radius(@props) when not(@props = none) {
+    @top:extract(@props,1);
+    @right:extract(@props,2);
+    @bottom:extract(@props,3);
+    @left:extract(@props,4);
+    
+    @top_left_radius: unit(extract(@top,1), px);
+    @top_right_radius: unit(extract(@right,1), px);
+    @bottom_right_radius: unit(extract(@bottom,1), px);
+    @bottom_left_radius: unit(extract(@left,1), px);
+    
+    & when 
+        not(@top_left_radius = 0), 
+        not(@top_right_radius = 0), 
+        not(@bottom_right_radius = 0), 
+        not(@bottom_left_radius = 0) 
+    {
+        border-radius:@top_left_radius @top_right_radius @bottom_right_radius @bottom_left_radius;
     }
 }
 

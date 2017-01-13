@@ -742,10 +742,8 @@ tab: colors
     .media_between(
         @min_bp, 
         @max_bp, 
-        {
-            
-            
-            .fx-block_parent-align_left& {
+        {   
+            .fx-block_parent-align-container_left& {
                 @max_margin: (@max_bp - @max_width);
                 .lock(
                     @property: margin-right; 
@@ -754,7 +752,7 @@ tab: colors
                 );
             }
             
-            .fx-block_parent-align_center& {
+            .fx-block_parent-align-container_center& {
                 @max_margin: (@max_bp - @max_width) / 2;
                 .lock(
                     @property: margin-left; 
@@ -771,11 +769,11 @@ tab: colors
     );
 
     .media_gt(@max_bp, {
-        .fx-block_parent-align_left& {
+        .fx-block_parent-align-container_left& {
             @margin: ~"calc( (100vw - " @max_width ~"))";
             margin-right:@margin;
         }
-        .fx-block_parent-align_center& {
+        .fx-block_parent-align-container_center& {
             @margin: ~"calc( (100vw - " @max_width ~") / 2)";
             margin-left:@margin;
             margin-right:@margin;

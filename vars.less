@@ -152,7 +152,6 @@ tab: colors
 .width(@width; @own_margin) when (length(@own_margin) = 1) {
     @real_own_margin: @own_margin @own_margin @own_margin @own_margin;
     .width(@width; @real_own_margin);
-    realownmargin:@real_own_margin;
 }
 
 
@@ -223,10 +222,9 @@ tab: colors
         }
     }
     & when (@width = layout) {
-        
         // layout-width block inside a full-width parent
         .fx-block_parent-width_full& {
-            .layout_width();
+            .layout_width(@own_margin);
         }
         
         // layout-width block inside a layout-width parent
@@ -730,13 +728,20 @@ tab: colors
     .box-shadow-loop(@vals; @index + 1);
 }
 
-.layout_width() {
+.layout_width(@own_margin:0 0 0 0;) {
     
     align-self: stretch;
+    islw:1;
+    @own_left_margin: unit(extract(@own_margin, 4), rem);
+    @own_right_margin: unit(extract(@own_margin, 2), rem);
+    
+    olm:@own_left_margin;
+    orm:@own_right_margin;
+    mbp: @min_bp;
     
     .media_lt(@min_bp, {
-      margin-left:0;
-      margin-right:0;
+      margin-left:@own_left_margin;
+      margin-right:@own_right_margin;
     });
   
     .media_between(
@@ -749,6 +754,7 @@ tab: colors
                     @property: margin-right; 
                     @min: 0px; 
                     @max: @max_margin; 
+                    @const: @own_right_margin;
                 );
             }
             
@@ -758,11 +764,13 @@ tab: colors
                     @property: margin-left; 
                     @min: 0px; 
                     @max: @max_margin; 
+                    @const: @own_left_margin;
                 );
                 .lock(
                     @property: margin-right; 
                     @min: 0px; 
                     @max: @max_margin; 
+                    @const: @own_right_margin;
                 );
             }
         }
@@ -774,9 +782,12 @@ tab: colors
             margin-right:@margin;
         }
         .fx-block_parent-align-container_center& {
-            @margin: ~"calc( (100vw - " @max_width ~") / 2)";
-            margin-left:@margin;
-            margin-right:@margin;
+            //@margin: ~"calc( (100vw - " @max_width ~") / 2)";
+            //margin-left:@margin;
+            //margin-right:@margin;
+            
+            margin-left: ~"calc( (100vw - " @max_width ~") / 2 + " @own_left_margin ~")";
+            margin-right: ~"calc( (100vw - " @max_width ~") / 2 + " @own_right_margin ~")";
         }
     });
 }

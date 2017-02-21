@@ -278,13 +278,13 @@ tab: colors
 }
 
 .align-self(@align) {
-    & when (@align = left) {
+    & when (@align = left), (@align = flex-start) {
         align-self: flex-start;
     }
     & when (@align = center) {
         align-self: center;
     }
-    & when (@align = right) {
+    & when (@align = right), (@align = flex-end) {
         align-self: flex-end;
     }
     & when (@align = none) {

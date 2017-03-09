@@ -567,7 +567,10 @@ tab: colors
     @o:extract(@vals, 3);
     @cvar:'color-@{c}-@{l}';
     
-    background+: fade(@@cvar, @o * 100%)
+    @point: fade(@@cvar, @o * 100%);
+    
+    background+: ~"linear-gradient(180deg, " @point ~" 0%, " @point ~" 100%)";
+    //background+: fade(@@cvar, @o * 100%)
 }
 
 .bg-linear-point(@points; @index:1) when (@index < length(@points) ) {

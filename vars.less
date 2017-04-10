@@ -794,3 +794,25 @@ tab: colors
         }
     });
 }
+
+@iconsets: fa gmdi lnr ti;
+@iconfamilies: 'FontAwesome' 'Material Icons' 'Linearicons-Free' 'themify';
+
+.fx_icon_family(@set:fa; @index: 1;) when (@index <= length(@iconsets)) {
+    @cs: extract(@iconsets, @index);
+    & when (@set = @cs) {
+        @cf: extract(@iconfamilies, @index);
+        font-family: @cf;
+    }
+    & when not(@set = @cs) {
+        .fx_icon_family(@set; @index + 1);
+    }
+}
+
+.fx_icon(@val) {
+    &:before {
+        @code: extract(@val, 3);
+        content: "\@{code}";
+        .fx_icon_family( extract(@val, 1) );
+    }
+}

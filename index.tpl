@@ -7,7 +7,7 @@
         style.less
     {/css}
     {js}
-        FX_JQUERY_PATH as jquery
+        FX_JQUERY_PATH
         /module/Floxim/Ui/Js/Floxim.js
     {/js}
 </head>

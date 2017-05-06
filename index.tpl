@@ -8,7 +8,7 @@
     {/css}
     {js}
         FX_JQUERY_PATH
-        /module/Floxim/Ui/Js/Floxim.js
+        Floxim.js from floxim.ui.js
     {/js}
 </head>
 <body fx:b="body">

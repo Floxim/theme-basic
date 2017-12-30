@@ -304,11 +304,28 @@ tab: colors
     .font(text 16px);
 }
 
-.font_min_size(@size, @min) {
+.font_min_size(@size, @min, @prop) {
     @fbp: @min / ( (@em / (@max_width / @lw) * 100 / @lw) * ( @size / 16) )*100;
     @media (max-width: ( @fbp) ) {
-        font-size:@min;
+        @{prop}:@min;
     }
+}
+
+.font_size(@size) {
+  .font_size(@size, font-size);
+}
+
+.font_size(@size, @prop) {
+  @{prop}:unit(@size/16, rem);
+  & when (@size >= 25px) {
+    .font_min_size(@size, 20px, @prop);
+  }
+  & when (@size < 25px) and (@size >= 15px) {
+    .font_min_size(@size, 14px, @prop);
+  }
+  & when (@size < 15px) {
+    .font_min_size(@size, 13px, @prop);
+  }
 }
 
 // 'nav 16px bold italic uppercase underline'
@@ -319,16 +336,7 @@ tab: colors
     }
     @size: extract(@font, 2);
     & when not(@size = inherit) and (length(@font) > 1) {
-        font-size:unit(@size/16, rem);
-        & when (@size >= 25px) {
-            .font_min_size(@size, 20px);
-        } 
-        & when (@size < 25px) and (@size > 14) {
-            .font_min_size(@size, 14px);
-        }
-        & when (@size < 15px) {
-            .font_min_size(@size, 12px);
-        }
+        .font_size(@size);
     }
     @weight: extract(@font, 3);
     & when not(@weight = inherit) and (length(@font) > 2) {
@@ -525,7 +533,7 @@ tab: colors
     .bgi-loop(@bg; 1);
 }
 
-.bgi-loop(@items; @index) when (@index < length(@items) / 3) {
+.bgi-loop(@items; @index) when (@index < (length(@items) / 3)) {
     @real_index: (@index - 1) * 3 + 2;
     @type_group: extract(@items, @real_index);
     @type: extract(@type_group, 1);
@@ -694,13 +702,11 @@ tab: colors
 .box-shadow(@vals) when (@vals = none) {}
 
 .box-shadow(@vals) when not(@vals = none) and ( length( extract(@vals, 1) ) > 1) {
-     calls: length( extract(@vals, 1) );
-    .box-shadow-loop(@vals, 1);
+     .box-shadow-loop(@vals, 1);
 }
 
 .box-shadow(@vals) when not(@vals = none) and ( length( extract(@vals, 1) ) = 1) {
-    calln:true;
-  	.box-shadow-loop(@vals none, 1);
+    .box-shadow-loop(@vals none, 1);
 }
 
 .box-shadow-loop(@vals; @index) when (@index <= length(@vals) ) and (length( extract(@vals, @index) ) = 8) {
@@ -734,13 +740,9 @@ tab: colors
 .layout_width(@own_margin:0 0 0 0;) {
     
     align-self: stretch;
-    islw:1;
     @own_left_margin: unit(extract(@own_margin, 4), rem);
     @own_right_margin: unit(extract(@own_margin, 2), rem);
-    
-    olm:@own_left_margin;
-    orm:@own_right_margin;
-    mbp: @min_bp;
+
     
     .media_lt(@min_bp, {
       margin-left:@own_left_margin;
@@ -811,8 +813,12 @@ tab: colors
 
 .fx_icon(@val) {
     &:before {
-        @code: extract(@val, 3);
-        content: "\@{code}";
-        .fx_icon_family( extract(@val, 1) );
+        .fx_icon_value(@val);
     }
+}
+
+.fx_icon_value(@val) {
+  @code: extract(@val, 3);
+  content: "\@{code}";
+  .fx_icon_family( extract(@val, 1) );
 }

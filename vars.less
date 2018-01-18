@@ -376,10 +376,15 @@ tab: colors
 
 
 .font-family(@family:main) {
+    /*
     .wf-active & {
         @var:'font_@{family}';
         font-family:@@var;
     }
+    */
+    @var:'font_@{family}';
+    font-family:@@var;
+
     /*
     .wf-loading & {
         color: transparent !important;

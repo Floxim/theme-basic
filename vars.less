@@ -35,6 +35,12 @@
     }
 }
 
+.apply-custom-rules(@rules) {
+  & when not(isstring(@rules)) and not(@rules = none) {
+    @rules();
+  }
+}
+
 
 /*
 label: Основной шрифт
@@ -351,8 +357,10 @@ tab: colors
         text-transform: @transform;
     }
     @decoration: extract( @font, 6);
-    & when not(@decoration = auto) and (length(@font) > 5) { 
-        text-decoration: @decoration;
+    & when not(@decoration = auto) and (length(@font) > 5) {
+      &, & a {
+          text-decoration: @decoration;
+      }
     }
     /*
     & when (length(@font) > 8) {
@@ -826,4 +834,43 @@ tab: colors
   @code: extract(@val, 3);
   content: "\@{code}";
   .fx_icon_family( extract(@val, 1) );
+}
+
+/*
+.text-shadow(none)
+ */
+.text-shadow(@vals) when (@vals = none) {}
+
+/*
+.text-shadow(0 -2 2 main 0 .98, 1 1 1 main 2 1)
+ */
+.text-shadow(@vals) when not(@vals = none) and ( length( extract(@vals, 1) ) > 1) {
+  .text-shadow-loop(@vals, 1);
+}
+
+/*
+.text-shadow(0 -2 2 main 0 .98)
+ */
+.text-shadow(@vals) when not(@vals = none) and ( length( extract(@vals, 1) ) = 1) {
+  .text-shadow-loop(@vals none, 1);
+}
+
+.text-shadow-loop(@vals; @index) when (@index <= length(@vals) ) and (length( extract(@vals, @index) ) = 6) {
+  @level: extract(@vals, @index);
+
+  @x: unit(extract(@level, 1), px);
+  @y: unit(extract(@level, 2), px);
+  @blur: unit(extract(@level, 3), px);
+
+  @c: extract(@level, 4);
+  @l: extract(@level, 5);
+  @o: extract(@level, 6);
+
+  @cvar:'color-@{c}-@{l}';
+  @color: fade(@@cvar, @o * 100%);
+
+
+  text-shadow+: @x;
+  text-shadow+_: @y @blur @color;
+  .text-shadow-loop(@vals; @index + 1);
 }
